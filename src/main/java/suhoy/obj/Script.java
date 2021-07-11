@@ -9,7 +9,7 @@ import suhoy.utils.Utils;
  */
 public abstract class Script implements Runnable {
 
-    public String id = "NONE";
+    public String id = "Not ready";
     protected String name;
     protected long minPacing;
     protected long maxPacing;
@@ -41,7 +41,7 @@ public abstract class Script implements Runnable {
     final public void run() {
         this.run = true;
         try {
-            id = this.name + "-" + Thread.currentThread().getName() + Thread.currentThread().getId();
+            id = this.name + "-" + Thread.currentThread().getName() +"-"+ Thread.currentThread().getId();
             init();
             loggerInfo.info(id + ": i am started");
             while (this.run) {

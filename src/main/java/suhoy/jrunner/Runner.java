@@ -57,16 +57,24 @@ public class Runner {
                     String stepAction = properties.getProperty("script" + i + ".step" + j).toLowerCase();
                     String[] action = stepAction.split(",");
                     switch (action[0]) {
-                        case ("start"):
-                        case ("stop"): {
+                        case ("start"): {
                             //заполняем массив скриптов инстансами скрипта
                             Script[] scripts = new Script[Integer.parseInt(action[1])];
                             User[] users = new User[Integer.parseInt(action[1])];
                             for (int u = 0; u < Integer.parseInt(action[1]); u++) {
-                                scripts[u] = (Script) Class.forName("scripts." + scriptName).getConstructor(String.class, long.class, long.class, boolean.class,Logger.class,Logger.class).newInstance(scriptName, scriptPacingMin, scriptPacingMax, scriptPacingEnabled,loggerInfo, loggerEx);
+                                scripts[u] = (Script) Class.forName("scripts." + scriptName).getConstructor(String.class, long.class, long.class, boolean.class, Logger.class, Logger.class).newInstance(scriptName, scriptPacingMin, scriptPacingMax, scriptPacingEnabled, loggerInfo, loggerEx);
                                 users[u] = new User();
                             }
-                            actionPool.addAction(new Action(action[0], Long.parseLong(action[2]),users, scripts), loggerInfo, loggerEx);
+                            actionPool.addAction(new Action(action[0], Long.parseLong(action[2]), users, scripts), loggerInfo, loggerEx);
+                            break;
+                        }
+                        case ("stop"): {
+                            //заполняем массив юзеров
+                            User[] users = new User[Integer.parseInt(action[1])];
+                            for (int u = 0; u < Integer.parseInt(action[1]); u++) {
+                                users[u] = new User();
+                            }
+                            actionPool.addAction(new Action(action[0], Long.parseLong(action[2]), users), loggerInfo, loggerEx);
                             break;
                         }
                         case ("wait"): {

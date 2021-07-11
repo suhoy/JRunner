@@ -16,25 +16,27 @@ public class Action /*implements Comparable<Action>*/ {
     private long finishTime;
     private User[] users;
     private Script[] scripts;
-    private Thread[] threads;
     //private long priority;
     private boolean done = false;
     private boolean activated = false;
     ThreadExecutor threadExecutor = new ThreadExecutor();
 
+    //start
     public Action(String action, long time, User[] users, Script[] script) {
         this.action = action;
         this.time = time;
-        /*
-        this.users = new User[users.length];
-        this.scripts = new Script[script.length];
-         */
         this.users = users;
         this.scripts = script;
-        this.threads = new Thread[script.length];
-
     }
 
+    //stop
+    public Action(String action, long time, User[] users) {
+        this.action = action;
+        this.time = time;
+        this.users = users;
+    }
+
+    //wait
     public Action(String action, long time) {
         this.action = action;
         this.time = time;
@@ -63,7 +65,6 @@ public class Action /*implements Comparable<Action>*/ {
                             if (i == users.length - 1) {
                                 this.done = true;
                             }
-                            //loggerInfo.info("Started: " + scripts[i].id);
                         }
                     }
                     break;
@@ -100,17 +101,6 @@ public class Action /*implements Comparable<Action>*/ {
                             this.done = true;
                         }
                     }
-                    /*
-                    for (int i = 0; i < users.length; i++) {
-                        if (users[i].shouldIWork()) {
-                            scripts[i].stop();
-                            loggerInfo.info("try to stop: " + scripts[i].id);
-                            if (i == users.length - 1) {
-                                loggerInfo.info("ITS LAST ONE to STOP: " + scripts[i].id);
-                                this.done = true;
-                            }
-                        }
-                    }*/
                     break;
                 }
             }

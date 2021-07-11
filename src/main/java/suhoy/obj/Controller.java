@@ -1,12 +1,7 @@
 package suhoy.obj;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
-import java.util.concurrent.PriorityBlockingQueue;
-import suhoy.obj.Action;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-//import threader.ThreadExecutor;
 
 /**
  *
@@ -36,14 +31,13 @@ public class Controller implements Runnable {
     public void run() {
         while (run) {
             try {
-                run=false;
+                run = false;
                 long start = System.currentTimeMillis();
                 for (ActionPool currentActionPool : actionPool) {
 
                     currentActionPool.doAction();
-                    if(!currentActionPool.done())
-                    {
-                        run=true;
+                    if (!currentActionPool.done()) {
+                        run = true;
                     }
                 }
                 long finish = System.currentTimeMillis();
