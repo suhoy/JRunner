@@ -11,6 +11,7 @@ import suhoy.obj.Action;
 import suhoy.obj.ActionPool;
 import suhoy.obj.Controller;
 import suhoy.obj.Script;
+import suhoy.obj.User;
 import suhoy.utils.ThreadExecutor;
 
 /**
@@ -38,7 +39,7 @@ public class Runner {
             Controller testController = new Controller(loggerInfo, loggerEx);
 
             //по количеству скриптов
-            for (int i = 1; i < scriptsCount+1; i++) {
+            for (int i = 1; i < scriptsCount + 1; i++) {
                 //получаем параметры скрипта
                 String scriptName = properties.getProperty("script" + i + ".name");
                 boolean scriptPacingEnabled = Boolean.parseBoolean(properties.getProperty("script" + i + ".pacing.enabled"));
@@ -47,25 +48,29 @@ public class Runner {
                 int scriptStepsCount = Integer.parseInt(properties.getProperty("script" + i + ".steps"));
 
                 //получаем скрипт
-                Object scriptInstance = Class.forName("scripts." + scriptName).getConstructor(String.class, long.class, long.class, boolean.class).newInstance(scriptName, scriptPacingMin, scriptPacingMax, scriptPacingEnabled);
+                //Object scriptInstance = Class.forName("scripts." + scriptName).getConstructor(String.class, long.class, long.class, boolean.class).newInstance(scriptName, scriptPacingMin, scriptPacingMax, scriptPacingEnabled);
                 //создаем пул
                 ActionPool actionPool = new ActionPool();
-                
+
                 //по количеству шагов добавляем шаги в пул, а потом в контроллер
-                for (int j = 1; j < scriptStepsCount+1; j++) {
+                for (int j = 1; j < scriptStepsCount + 1; j++) {
                     String stepAction = properties.getProperty("script" + i + ".step" + j).toLowerCase();
                     String[] action = stepAction.split(",");
                     switch (action[0]) {
-                        case ("start"): {
-                            actionPool.addAction(new Action(action[0], Long.parseLong(action[2]), Integer.parseInt(action[1])), (Script) scriptInstance, loggerInfo, loggerEx);
+                        case ("start"):
+                        case ("stop"): {
+                            //заполняем массив скриптов инстансами скрипта
+                            Script[] scripts = new Script[Integer.parseInt(action[1])];
+                            User[] users = new User[Integer.parseInt(action[1])];
+                            for (int u = 0; u < Integer.parseInt(action[1]); u++) {
+                                scripts[u] = (Script) Class.forName("scripts." + scriptName).getConstructor(String.class, long.class, long.class, boolean.class,Logger.class,Logger.class).newInstance(scriptName, scriptPacingMin, scriptPacingMax, scriptPacingEnabled,loggerInfo, loggerEx);
+                                users[u] = new User();
+                            }
+                            actionPool.addAction(new Action(action[0], Long.parseLong(action[2]),users, scripts), loggerInfo, loggerEx);
                             break;
                         }
                         case ("wait"): {
-                            actionPool.addAction(new Action(action[0], Long.parseLong(action[1])), null, loggerInfo, loggerEx);
-                            break;
-                        }
-                        case ("stop"): {
-                            actionPool.addAction(new Action(action[0], Long.parseLong(action[2]), Integer.parseInt(action[1])), (Script) scriptInstance, loggerInfo, loggerEx);
+                            actionPool.addAction(new Action(action[0], Long.parseLong(action[1])), loggerInfo, loggerEx);
                             break;
                         }
                     } // end switch  

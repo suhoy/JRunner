@@ -14,18 +14,22 @@ public class Action /*implements Comparable<Action>*/ {
     private long startTime;
     private long finishTime;
     private User[] users;
+    private Script[] scripts;
     //private long priority;
     private boolean done = false;
     private boolean activated = false;
+    ThreadExecutor threadExecutor = new ThreadExecutor();
 
-    public Action(String action, long time, int users) {
+    public Action(String action, long time, User [] users, Script[] script) {
         this.action = action;
         this.time = time;
-
-        this.users = new User[users];
-        for (int i = 0; i < users; i++) {
-            this.users[i] = new User();
-        }
+/*
+        this.users = new User[users.length];
+        this.scripts = new Script[script.length];
+*/
+        this.users = users;
+        this.scripts = script;
+       
     }
 
     public Action(String action, long time) {
@@ -42,34 +46,38 @@ public class Action /*implements Comparable<Action>*/ {
         }
     }
 
-    public void work(Script script, ThreadExecutor threadExecutor,Logger loggerInfo) {
-        checkAndActivate();
-        switch (action) {
-            case ("start"): {
-                for (User currentUser : users) {
-                    if (currentUser.shouldIWork()) {
-                        threadExecutor.execute(script);
-                        loggerInfo.info("Started: "+script.getId());
-                    }
-                }
-                break;
-            }
-            case ("wait"): {
-                if (System.currentTimeMillis() >= this.finishTime) {
-                    this.done = true;
-                }
-                break;
-            }
-            case ("stop"): {
+    public void work(Logger loggerInfo, Logger loggerEx) {
+        try {
+            checkAndActivate();
+            switch (action) {
+                case ("start"): {
 
-                for (User currentUser : users) {
-                    if (currentUser.shouldIWork()) {
-                        script.stop();
-                        loggerInfo.info("Stopped: "+script.getId());
+                    for (int i = 0; i < users.length; i++) {
+                        if (users[i].shouldIWork()) {
+                            threadExecutor.execute(scripts[i]);
+                            //loggerInfo.info("Started: " + scripts[i].id);
+                        }
                     }
+                    break;
                 }
-                break;
+                case ("wait"): {
+                    if (System.currentTimeMillis() >= this.finishTime) {
+                        this.done = true;
+                    }
+                    break;
+                }
+                case ("stop"): {
+                    for (int i = 0; i < users.length; i++) {
+                        if (users[i].shouldIWork()) {
+                            scripts[i].stop();
+                            //loggerInfo.info("Stopped: " + scripts[i].getId());
+                        }
+                    }
+                    break;
+                }
             }
+        } catch (Exception ex) {
+            loggerEx.error(ex.getMessage(), ex);
         }
     }
 
