@@ -12,6 +12,7 @@ import suhoy.obj.ActionPool;
 import suhoy.obj.Controller;
 import suhoy.obj.Script;
 import suhoy.obj.User;
+import suhoy.utils.InfluxSettings;
 import suhoy.utils.ThreadExecutor;
 
 /**
@@ -33,6 +34,15 @@ public class Runner {
             ReadParams(args);
             loggerInfo.info(returnParams());
             properties.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("config.properties"));
+
+            //read influx
+            InfluxSettings influxSet = new InfluxSettings(
+                    properties.getProperty("influx.endpoint"),
+                    properties.getProperty("influx.database"),
+                    properties.getProperty("influx.retention"),
+                    properties.getProperty("influx.user"),
+                    properties.getProperty("influx.pass"),
+                    Integer.parseInt(properties.getProperty("batch")));
 
             int scriptsCount = Integer.parseInt(properties.getProperty("scripts.count"));
 
@@ -62,7 +72,9 @@ public class Runner {
                             Script[] scripts = new Script[Integer.parseInt(action[1])];
                             User[] users = new User[Integer.parseInt(action[1])];
                             for (int u = 0; u < Integer.parseInt(action[1]); u++) {
-                                scripts[u] = (Script) Class.forName("scripts." + scriptName).getConstructor(String.class, long.class, long.class, boolean.class, Logger.class, Logger.class).newInstance(scriptName, scriptPacingMin, scriptPacingMax, scriptPacingEnabled, loggerInfo, loggerEx);
+                                scripts[u] = (Script) Class.forName("scripts." + scriptName)
+                                        .getConstructor(String.class, long.class, long.class, boolean.class, Logger.class, Logger.class, InfluxSettings.class)
+                                        .newInstance(scriptName, scriptPacingMin, scriptPacingMax, scriptPacingEnabled, loggerInfo, loggerEx, influxSet);
                                 users[u] = new User();
                             }
                             actionPool.addAction(new Action(action[0], Long.parseLong(action[2]), users, scripts), loggerInfo, loggerEx);

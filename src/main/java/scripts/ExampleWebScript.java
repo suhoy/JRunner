@@ -6,6 +6,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import junit.framework.Assert;
 import org.apache.logging.log4j.Logger;
 import suhoy.obj.Script;
+import suhoy.utils.InfluxSettings;
 
 /**
  *
@@ -13,8 +14,8 @@ import suhoy.obj.Script;
  */
 public class ExampleWebScript extends Script {
 
-    public ExampleWebScript(String name, long minPacing, long maxPacing, boolean pacing, Logger loggerInfo, Logger loggerEx) {
-        super(name, minPacing, maxPacing, pacing, loggerInfo, loggerEx);
+    public ExampleWebScript(String name, long minPacing, long maxPacing, boolean pacing, Logger loggerInfo, Logger loggerEx, InfluxSettings influxSet) {
+        super(name, minPacing, maxPacing, pacing, loggerInfo, loggerEx, influxSet);
     }
 
     public ExampleWebScript(Script script) {

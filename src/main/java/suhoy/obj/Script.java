@@ -2,6 +2,11 @@ package suhoy.obj;
 
 import org.apache.logging.log4j.Logger;
 import suhoy.utils.Utils;
+import org.influxdb.InfluxDBFactory;
+import org.influxdb.dto.BatchPoints;
+import org.influxdb.InfluxDB;
+import suhoy.utils.InfluxSettings;
+ 
 
 /**
  *
@@ -18,14 +23,20 @@ public abstract class Script implements Runnable {
     protected boolean pacing = false;
     protected Logger loggerInfo;
     protected Logger loggerEx;
+    protected InfluxDB influxDB = null;
+    protected BatchPoints batchPoints = null;
+    protected int batch_size = 10;
+    protected InfluxSettings influxSet;
 
-    public Script(String name, long minPacing, long maxPacing, boolean pacing, Logger loggerInfo, Logger loggerEx) {
+
+    public Script(String name, long minPacing, long maxPacing, boolean pacing, Logger loggerInfo, Logger loggerEx, InfluxSettings influxSet) {
         this.name = name;
         this.minPacing = minPacing;
         this.maxPacing = maxPacing;
         this.pacing = pacing;
         this.loggerInfo = loggerInfo;
         this.loggerEx = loggerEx;
+        this.influxSet = influxSet;
     }
 
     protected Script(Script script) {
@@ -35,6 +46,7 @@ public abstract class Script implements Runnable {
         this.pacing = script.pacing;
         this.loggerInfo = script.loggerInfo;
         this.loggerEx = script.loggerEx;
+        this.influxSet = script.influxSet;
     }
 
     @Override
