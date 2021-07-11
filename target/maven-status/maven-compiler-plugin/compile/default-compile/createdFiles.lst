@@ -1,8 +1,0 @@
-templates\Script.class
-scripts\web\WebScript.class
-suhoy\jrunner\Runner.class
-obj\Action.class
-utils\Utils.class
-obj\User.class
-templates\Controller.class
-threader\ThreadExecutor.class
