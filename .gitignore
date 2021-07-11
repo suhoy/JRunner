@@ -11,9 +11,9 @@
 .mtj.tmp/
 
 # target
-#*/target/**
-#/target/**
-#target/**
+*/target/**
+/target/**
+target/**
 
 # Package Files #
 *.jar
