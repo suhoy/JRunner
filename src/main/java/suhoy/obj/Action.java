@@ -1,5 +1,8 @@
 package suhoy.obj;
 
+import org.apache.logging.log4j.Logger;
+import suhoy.utils.ThreadExecutor;
+
 /**
  *
  * @author suh1995
@@ -12,13 +15,12 @@ public class Action /*implements Comparable<Action>*/ {
     private long finishTime;
     private User[] users;
     //private long priority;
-    private boolean done;
+    private boolean done = false;
+    private boolean activated = false;
 
     public Action(String action, long time, int users) {
         this.action = action;
         this.time = time;
-        //this.priority = priority;
-        this.done = false;
 
         this.users = new User[users];
         for (int i = 0; i < users; i++) {
@@ -29,15 +31,46 @@ public class Action /*implements Comparable<Action>*/ {
     public Action(String action, long time) {
         this.action = action;
         this.time = time;
-        //this.script = script;
-        //this.priority = priority;
-        this.done = false;
     }
 
-    public void activate() {
-        this.startTime = System.currentTimeMillis();
-        this.finishTime = System.currentTimeMillis() + time * 60 * 1000L;
-        activateUsers();
+    private void checkAndActivate() {
+        if (!this.activated) {
+            this.startTime = System.currentTimeMillis();
+            this.finishTime = System.currentTimeMillis() + time * 60 * 1000L;
+            activateUsers();
+            this.activated = true;
+        }
+    }
+
+    public void work(Script script, ThreadExecutor threadExecutor,Logger loggerInfo) {
+        checkAndActivate();
+        switch (action) {
+            case ("start"): {
+                for (User currentUser : users) {
+                    if (currentUser.shouldIWork()) {
+                        threadExecutor.execute(script);
+                        loggerInfo.info("Started: "+script.getId());
+                    }
+                }
+                break;
+            }
+            case ("wait"): {
+                if (System.currentTimeMillis() >= this.finishTime) {
+                    this.done = true;
+                }
+                break;
+            }
+            case ("stop"): {
+
+                for (User currentUser : users) {
+                    if (currentUser.shouldIWork()) {
+                        script.stop();
+                        loggerInfo.info("Stopped: "+script.getId());
+                    }
+                }
+                break;
+            }
+        }
     }
 
     private void activateUsers() {
@@ -47,8 +80,8 @@ public class Action /*implements Comparable<Action>*/ {
         }
     }
 
-    private boolean done() {
-        return this.done();
+    public boolean done() {
+        return this.done;
     }
     /*
     @Override

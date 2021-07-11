@@ -48,4 +48,7 @@ public abstract class Script implements Runnable {
     final public void stop() {
         this.run = false;
     }
+    final public String getId() {
+        return Thread.currentThread().getName()+"_"+Thread.currentThread().getId()+"_"+name;
+    }
 }

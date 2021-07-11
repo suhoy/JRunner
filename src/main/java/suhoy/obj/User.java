@@ -14,16 +14,31 @@ public class User {
         this.done = false;
     }
 
+    /*
     public boolean ready() {
         return actionTime <= System.currentTimeMillis();
     }
-
+     */
+ /*
     public boolean done() {
         return this.done;
     }
-
+     */
+    public boolean shouldIWork() {
+        if (!this.done) {
+            if (System.currentTimeMillis() >= actionTime) {
+                this.done = true;
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+    /*
     public void use() {
         this.done = true;
     }
-
+     */
 }
