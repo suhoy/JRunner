@@ -38,7 +38,7 @@ public class Runner {
             Controller testController = new Controller(loggerInfo, loggerEx);
 
             //по количеству скриптов
-            for (int i = 0; i < scriptsCount; i++) {
+            for (int i = 1; i < scriptsCount+1; i++) {
                 String scriptName = properties.getProperty("script" + i + ".name");
                 boolean scriptPacingEnabled = Boolean.parseBoolean(properties.getProperty("script" + i + ".pacing.enabled"));
                 long scriptPacingMin = Long.parseLong(properties.getProperty("script" + i + ".pacing.value").split(",")[0]);
@@ -52,21 +52,21 @@ public class Runner {
                 //получаем скрипт
                 //добавляем скрипт в контроллер
                 //по количеству шагов
-                for (int j = 0; j < scriptStepsCount; j++) {
+                for (int j = 1; j < scriptStepsCount+1; j++) {
                     String stepAction = properties.getProperty("script" + i + ".step" + j);
                     String[] action = stepAction.split(",");
                     switch (action[0]) {
                         case ("start"): {
-                            actionPool.addAction(new Action(action[0], Long.parseLong(action[2]), Integer.parseInt(action[1])), (Script) scriptInstance);
+                            actionPool.addAction(new Action(action[0], Long.parseLong(action[2]), Integer.parseInt(action[1])), (Script) scriptInstance, loggerInfo, loggerEx);
                             break;
                         }
                         case ("wait"): {
 
-                            actionPool.addAction(new Action(action[0], Long.parseLong(action[1])), null);
+                            actionPool.addAction(new Action(action[0], Long.parseLong(action[1])), null, loggerInfo, loggerEx);
                             break;
                         }
                         case ("stop"): {
-                            actionPool.addAction(new Action(action[0], Long.parseLong(action[2]), Integer.parseInt(action[1])), (Script) scriptInstance);
+                            actionPool.addAction(new Action(action[0], Long.parseLong(action[2]), Integer.parseInt(action[1])), (Script) scriptInstance, loggerInfo, loggerEx);
                             break;
                         }
 

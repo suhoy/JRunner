@@ -24,12 +24,14 @@ public abstract class Script implements Runnable {
 
     @Override
     final public void run() {
-        this.run=true;
+        this.run = true;
         try {
             init();
             while (run) {
                 action();
-                Thread.sleep(Utils.getPacing(this.minPacing, this.maxPacing));
+                if (this.pacing) {
+                    Thread.sleep(Utils.getPacing(this.minPacing, this.maxPacing));
+                }
             }
             end();
         } catch (Exception ex) {
