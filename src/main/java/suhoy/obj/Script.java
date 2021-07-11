@@ -1,6 +1,6 @@
-package templates;
+package suhoy.obj;
 
-import utils.Utils;
+import suhoy.utils.Utils;
 
 /**
  *
@@ -15,9 +15,8 @@ public abstract class Script implements Runnable {
     protected boolean run = true;
     protected boolean pacing = false;
 
-    public Script(String name, int user, long minPacing, long maxPacing, boolean pacing) {
+    public Script(String name, long minPacing, long maxPacing, boolean pacing) {
         this.name = name;
-        this.user = user; 
         this.minPacing = minPacing;
         this.maxPacing = maxPacing;
         this.pacing = pacing;

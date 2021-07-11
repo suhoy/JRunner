@@ -1,4 +1,4 @@
-package threader;
+package suhoy.utils;
 
 
 import java.util.concurrent.Executor;

@@ -1,19 +1,19 @@
-package scripts.web;
+package scripts;
 
 import com.gargoylesoftware.htmlunit.SilentCssErrorHandler;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import junit.framework.Assert;
-import templates.Script;
+import suhoy.obj.Script;
 
 /**
  *
  * @author suh1995
  */
-public class WebScript extends Script {
+public class ExampleWebScript extends Script {
 
-    public WebScript(String name, int user, long minPacing, long maxPacing, boolean pacing) {
-        super(name, user, minPacing, maxPacing, pacing);
+    public ExampleWebScript(String name, long minPacing, long maxPacing, boolean pacing) {
+        super(name, minPacing, maxPacing, pacing);
     }
 
         

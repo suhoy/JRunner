@@ -1,4 +1,4 @@
-package utils;
+package suhoy.utils;
 
 import java.util.Random;
 
