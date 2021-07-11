@@ -20,8 +20,9 @@ public class Action /*implements Comparable<Action>*/ {
         //this.priority = priority;
         this.done = false;
 
+        this.users = new User[users];
         for (int i = 0; i < users; i++) {
-            this.users[0] = new User();
+            this.users[i] = new User();
         }
     }
 
