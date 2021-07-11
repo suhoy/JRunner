@@ -11,15 +11,17 @@ import suhoy.obj.Script;
  *
  * @author suh1995
  */
-public class ExampleWebScript extends Script {
+public class ExampleWebScript1 extends Script {
 
-    public ExampleWebScript(String name, long minPacing, long maxPacing, boolean pacing, Logger loggerInfo, Logger loggerEx) {
+    public ExampleWebScript1(String name, long minPacing, long maxPacing, boolean pacing, Logger loggerInfo, Logger loggerEx) {
         super(name, minPacing, maxPacing, pacing, loggerInfo, loggerEx);
     }
 
-    public ExampleWebScript(Script script) {
+    public ExampleWebScript1(Script script) {
         super(script);
     }
+
+
 
     @Override
     public void init() {
@@ -29,7 +31,7 @@ public class ExampleWebScript extends Script {
     public void action() {
 
         try {
-            long sleep = 3000;
+            long sleep = 2000;
             Thread.sleep(sleep);
         } catch (Exception ex) {
             ex.printStackTrace();

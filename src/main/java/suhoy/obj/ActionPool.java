@@ -14,7 +14,7 @@ public class ActionPool {
     //private ArrayList<Script[]> scripts = new ArrayList<>();
     private Logger loggerInfo;
     private Logger loggerEx;
-    
+    private boolean done = false;
 
     public void addAction(Action action, /*Script[] script,*/ Logger loggerInfo, Logger loggerEx) {
         this.actions.add(action);
@@ -24,6 +24,7 @@ public class ActionPool {
     }
 
     public void doAction() {
+        this.done = true;
         /*if (actions.size() != scripts.size()) {
             loggerEx.error("ActionPool: actions.size()!=scripts.size()");
             return;
@@ -33,7 +34,8 @@ public class ActionPool {
             //если action ещё не выполнен - делаем
             if (!actions.get(i).done()) {
                 //работаем
-                actions.get(i).work(loggerInfo,loggerEx);
+                this.done = false;
+                actions.get(i).work(loggerInfo, loggerEx, actions);
                 break;
                 /*//если после работы задача не выполнена
                 if (!actions.get(i).done()) {
@@ -45,6 +47,9 @@ public class ActionPool {
                 continue;
             }
         }
+    }
 
+    public boolean done() {
+        return this.done;
     }
 }

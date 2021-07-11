@@ -18,7 +18,7 @@ public class Controller implements Runnable {
     private Logger loggerInfo;
     private Logger loggerEx;
     private boolean run = true;
-    private final long tick = 20L;
+    private final long tick = 100L;
 
     public Controller(Logger loggerInfo, Logger loggerEx) {
         this.loggerInfo = loggerInfo;
@@ -36,10 +36,21 @@ public class Controller implements Runnable {
     public void run() {
         while (run) {
             try {
+                run=false;
+                long start = System.currentTimeMillis();
                 for (ActionPool currentActionPool : actionPool) {
+
                     currentActionPool.doAction();
+                    if(!currentActionPool.done())
+                    {
+                        run=true;
+                    }
                 }
-                Thread.sleep(this.tick);
+                long finish = System.currentTimeMillis();
+                long sleep = this.tick - finish - start;
+                if (sleep > 0) {
+                    Thread.sleep(this.tick);
+                }
             } catch (Exception ex) {
                 loggerEx.error(ex.getMessage(), ex);
             }

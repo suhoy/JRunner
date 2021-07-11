@@ -41,10 +41,10 @@ public abstract class Script implements Runnable {
     final public void run() {
         this.run = true;
         try {
-            id = this.name+"-"+Thread.currentThread().getName() + Thread.currentThread().getId();
+            id = this.name + "-" + Thread.currentThread().getName() + Thread.currentThread().getId();
             init();
-            loggerInfo.info(id+": i am started");
-            while (run) {
+            loggerInfo.info(id + ": i am started");
+            while (this.run) {
                 long start = System.currentTimeMillis();
                 action();
                 long finish = System.currentTimeMillis();
@@ -52,15 +52,16 @@ public abstract class Script implements Runnable {
                 if (this.pacing) {
                     long p = Utils.getPacing(this.minPacing, this.maxPacing) - duration;
                     if (p > 0) {
-                        loggerInfo.info(id+": duration = "+duration+"ms, and i am sleep for " + p + " ms");
+                        loggerInfo.info(id + ": duration = " + duration + "ms, and i am sleep for " + p + " ms");
                         Thread.sleep(p);
                     }
 
                 }
             }
             end();
+            loggerInfo.info(id + ": i am stopped");
         } catch (Exception ex) {
-            loggerEx.error(id+ex.getMessage(), ex);
+            loggerEx.error(id + ex.getMessage(), ex);
         }
     }
 
@@ -70,7 +71,10 @@ public abstract class Script implements Runnable {
 
     abstract protected void end();
 
-    final public void stop() {
+    public final void stop() {
         this.run = false;
+    }
+    public final boolean running() {
+        return this.run;
     }
 }

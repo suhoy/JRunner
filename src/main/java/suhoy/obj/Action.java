@@ -1,5 +1,6 @@
 package suhoy.obj;
 
+import java.util.ArrayList;
 import org.apache.logging.log4j.Logger;
 import suhoy.utils.ThreadExecutor;
 
@@ -15,21 +16,23 @@ public class Action /*implements Comparable<Action>*/ {
     private long finishTime;
     private User[] users;
     private Script[] scripts;
+    private Thread[] threads;
     //private long priority;
     private boolean done = false;
     private boolean activated = false;
     ThreadExecutor threadExecutor = new ThreadExecutor();
 
-    public Action(String action, long time, User [] users, Script[] script) {
+    public Action(String action, long time, User[] users, Script[] script) {
         this.action = action;
         this.time = time;
-/*
+        /*
         this.users = new User[users.length];
         this.scripts = new Script[script.length];
-*/
+         */
         this.users = users;
         this.scripts = script;
-       
+        this.threads = new Thread[script.length];
+
     }
 
     public Action(String action, long time) {
@@ -41,20 +44,25 @@ public class Action /*implements Comparable<Action>*/ {
         if (!this.activated) {
             this.startTime = System.currentTimeMillis();
             this.finishTime = System.currentTimeMillis() + time * 60 * 1000L;
-            activateUsers();
+            if (!action.equalsIgnoreCase("wait")) {
+                activateUsers();
+            }
             this.activated = true;
         }
     }
 
-    public void work(Logger loggerInfo, Logger loggerEx) {
+    public void work(Logger loggerInfo, Logger loggerEx, ArrayList<Action> actionP) {
+        checkAndActivate();
         try {
-            checkAndActivate();
             switch (action) {
                 case ("start"): {
 
                     for (int i = 0; i < users.length; i++) {
                         if (users[i].shouldIWork()) {
                             threadExecutor.execute(scripts[i]);
+                            if (i == users.length - 1) {
+                                this.done = true;
+                            }
                             //loggerInfo.info("Started: " + scripts[i].id);
                         }
                     }
@@ -67,12 +75,42 @@ public class Action /*implements Comparable<Action>*/ {
                     break;
                 }
                 case ("stop"): {
+
+                    for (int i = 0; i < users.length; i++) {
+                        if (users[i].shouldIWork()) {
+                            boolean find = false;
+                            //находим в старых экшенах скрипт и стопаем его
+                            for (Action act : actionP) {
+                                for (Script sc : act.scripts) {
+                                    if (sc.running()) {
+                                        sc.stop();
+                                        find = true;
+                                        break;
+                                    }
+                                    break;
+                                } // end for scripts
+                                break;
+                            } //end for actions
+                            if (!find) {
+                                this.done = true;
+                                break;
+                            }
+                        } // end if shouldIWork
+                        if (i == users.length - 1) {
+                            this.done = true;
+                        }
+                    }
+                    /*
                     for (int i = 0; i < users.length; i++) {
                         if (users[i].shouldIWork()) {
                             scripts[i].stop();
-                            //loggerInfo.info("Stopped: " + scripts[i].getId());
+                            loggerInfo.info("try to stop: " + scripts[i].id);
+                            if (i == users.length - 1) {
+                                loggerInfo.info("ITS LAST ONE to STOP: " + scripts[i].id);
+                                this.done = true;
+                            }
                         }
-                    }
+                    }*/
                     break;
                 }
             }
