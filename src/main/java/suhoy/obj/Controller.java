@@ -4,7 +4,8 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.concurrent.PriorityBlockingQueue;
 import suhoy.obj.Action;
-import suhoy.obj.ActionPool;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 //import threader.ThreadExecutor;
 
 /**
@@ -13,33 +14,34 @@ import suhoy.obj.ActionPool;
  */
 public class Controller implements Runnable {
 
-    private ArrayList<ActionPool> actionP = new ArrayList<>();
-    //private ThreadExecutor threadEx;
+    private ArrayList<ActionPool> actionPool = new ArrayList<>();
+    private Logger loggerInfo;
+    private Logger loggerEx;
     private boolean run = true;
     private final long tick = 20L;
 
-    public Controller() {
-
+    public Controller(Logger loggerInfo, Logger loggerEx) {
+        this.loggerInfo = loggerInfo;
+        this.loggerEx = loggerEx;
     }
 
-    public void fillActionPool(ActionPool ap) {
+    public void addActionPool(ActionPool ap) {
         try {
-            actionP.add(ap);
+            actionPool.add(ap);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            loggerEx.error(ex.getMessage(), ex);
         }
     }
 
     public void run() {
         while (run) {
             try {
-                for (ActionPool currentActionPool : actionP) {
-                    //пройтись по пулу и что-то запустить
+                for (ActionPool currentActionPool : actionPool) {
+                    currentActionPool.doAction();
                 }
-
                 Thread.sleep(this.tick);
             } catch (Exception ex) {
-                ex.printStackTrace();
+                loggerEx.error(ex.getMessage(), ex);
             }
         }
     }

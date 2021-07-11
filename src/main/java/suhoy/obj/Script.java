@@ -12,7 +12,7 @@ public abstract class Script implements Runnable {
     protected long minPacing;
     protected long maxPacing;
     protected int user;
-    protected boolean run = true;
+    protected boolean run = false;
     protected boolean pacing = false;
 
     public Script(String name, long minPacing, long maxPacing, boolean pacing) {
@@ -24,6 +24,7 @@ public abstract class Script implements Runnable {
 
     @Override
     final public void run() {
+        this.run=true;
         try {
             init();
             while (run) {

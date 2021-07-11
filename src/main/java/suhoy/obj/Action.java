@@ -4,26 +4,33 @@ package suhoy.obj;
  *
  * @author suh1995
  */
-public class Action implements Comparable<Action> {
+public class Action /*implements Comparable<Action>*/ {
 
     private String action;
     private long time;
     private long startTime;
     private long finishTime;
     private User[] users;
-    private long priority;
+    //private long priority;
     private boolean done;
 
-    public Action(String action, long time, int users, long priority) {
+    public Action(String action, long time, int users) {
         this.action = action;
         this.time = time;
-
-        this.priority = priority;
+        //this.priority = priority;
         this.done = false;
 
         for (int i = 0; i < users; i++) {
             this.users[0] = new User();
         }
+    }
+
+    public Action(String action, long time) {
+        this.action = action;
+        this.time = time;
+        //this.script = script;
+        //this.priority = priority;
+        this.done = false;
     }
 
     public void activate() {
@@ -42,7 +49,7 @@ public class Action implements Comparable<Action> {
     private boolean done() {
         return this.done();
     }
-
+    /*
     @Override
     public int compareTo(Action input) {
         if (this.priority == input.priority) {
@@ -53,5 +60,5 @@ public class Action implements Comparable<Action> {
             return -1;
         }
     }
-
+     */
 }

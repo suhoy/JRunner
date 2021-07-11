@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.lang3.text.StrBuilder;
-import scripts.ExampleWebScript;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import java.util.Properties;
+import suhoy.obj.Action;
 import suhoy.obj.ActionPool;
 import suhoy.obj.Controller;
+import suhoy.obj.Script;
 import suhoy.utils.ThreadExecutor;
 
 /**
@@ -20,8 +20,8 @@ import suhoy.utils.ThreadExecutor;
 public class Runner {
 
     final static Map<String, List<String>> args = new HashMap<>();
-    final static Logger logger_info = LogManager.getLogger("lr_info");
-    final static Logger logger_ex = LogManager.getLogger("lr_exception");
+    final static Logger loggerInfo = LogManager.getLogger("lr_info");
+    final static Logger loggerEx = LogManager.getLogger("lr_exception");
     final static Properties properties = new Properties();
     final static ThreadExecutor threadExecutor = new ThreadExecutor();
 
@@ -30,31 +30,47 @@ public class Runner {
     public static void main(String[] args) {
         try {
             ReadParams(args);
-            logger_info.info(returnParams());
+            loggerInfo.info(returnParams());
             properties.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("config.properties"));
 
             int scriptsCount = Integer.parseInt(properties.getProperty("scripts.count"));
-            
-            Controller testController = new Controller();
-            
+
+            Controller testController = new Controller(loggerInfo, loggerEx);
+
             //по количеству скриптов
             for (int i = 0; i < scriptsCount; i++) {
-                String scriptName = properties.getProperty("script" + scriptsCount + ".name");
-                boolean scriptPacingEnabled = Boolean.parseBoolean(properties.getProperty("script" + scriptsCount + ".pacing.enabled"));
-                long scriptPacingMin = Long.parseLong(properties.getProperty("script" + scriptsCount + ".pacing.value").split(",")[0]);
-                long scriptPacingMax = Long.parseLong(properties.getProperty("script" + scriptsCount + ".pacing.value").split(",")[1]);
-                int scriptStepsCount = Integer.parseInt(properties.getProperty("script" + scriptsCount + ".steps"));
+                String scriptName = properties.getProperty("script" + i + ".name");
+                boolean scriptPacingEnabled = Boolean.parseBoolean(properties.getProperty("script" + i + ".pacing.enabled"));
+                long scriptPacingMin = Long.parseLong(properties.getProperty("script" + i + ".pacing.value").split(",")[0]);
+                long scriptPacingMax = Long.parseLong(properties.getProperty("script" + i + ".pacing.value").split(",")[1]);
+                int scriptStepsCount = Integer.parseInt(properties.getProperty("script" + i + ".steps"));
 
                 Object scriptInstance = Class.forName("scripts." + scriptName).getConstructor(String.class, long.class, long.class, boolean.class).newInstance(scriptName, scriptPacingMin, scriptPacingMax, scriptPacingEnabled);
                 //
 
-                ActionPool scriptActionPool = new ActionPool();
+                ActionPool actionPool = new ActionPool();
                 //получаем скрипт
                 //добавляем скрипт в контроллер
                 //по количеству шагов
                 for (int j = 0; j < scriptStepsCount; j++) {
-                    
-                    //ActionPool.add
+                    String stepAction = properties.getProperty("script" + i + ".step" + j);
+                    String[] action = stepAction.split(",");
+                    switch (action[0]) {
+                        case ("start"): {
+                            actionPool.addAction(new Action(action[0], Long.parseLong(action[2]), Integer.parseInt(action[1])), (Script) scriptInstance);
+                            break;
+                        }
+                        case ("wait"): {
+
+                            actionPool.addAction(new Action(action[0], Long.parseLong(action[1])), null);
+                            break;
+                        }
+                        case ("stop"): {
+                            actionPool.addAction(new Action(action[0], Long.parseLong(action[2]), Integer.parseInt(action[1])), (Script) scriptInstance);
+                            break;
+                        }
+
+                    }
                     //добавляем шаги в контроллер
                     /*
                     script1.step1=start,10,10
@@ -64,13 +80,12 @@ public class Runner {
                     script1.step5=stop,15,1
                      */
                 }
-                testController.fillActionPool(scriptActionPool);
+                testController.addActionPool(actionPool);
             }
             threadExecutor.execute(testController);
-            
 
         } catch (Exception ex) {
-            logger_ex.error(ex.getMessage(), ex);
+            loggerEx.error(ex.getMessage(), ex);
         }
     }
 
