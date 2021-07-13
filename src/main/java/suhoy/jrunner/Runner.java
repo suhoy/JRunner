@@ -42,7 +42,7 @@ public class Runner {
                     properties.getProperty("influx.retention"),
                     properties.getProperty("influx.user"),
                     properties.getProperty("influx.pass"),
-                    Integer.parseInt(properties.getProperty("batch")));
+                    Integer.parseInt(properties.getProperty("influx.batch")));
 
             int scriptsCount = Integer.parseInt(properties.getProperty("scripts.count"));
 

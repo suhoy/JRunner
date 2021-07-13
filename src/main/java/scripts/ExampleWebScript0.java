@@ -1,24 +1,23 @@
 package scripts;
 
-import com.gargoylesoftware.htmlunit.SilentCssErrorHandler;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import junit.framework.Assert;
+import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Logger;
+import org.influxdb.dto.Point;
 import suhoy.obj.Script;
 import suhoy.utils.InfluxSettings;
+import suhoy.utils.Utils;
 
 /**
  *
  * @author suh1995
  */
-public class ExampleWebScript extends Script {
+public class ExampleWebScript0 extends Script {
 
-    public ExampleWebScript(String name, long minPacing, long maxPacing, boolean pacing, Logger loggerInfo, Logger loggerEx, InfluxSettings influxSet) {
+    public ExampleWebScript0(String name, long minPacing, long maxPacing, boolean pacing, Logger loggerInfo, Logger loggerEx, InfluxSettings influxSet) {
         super(name, minPacing, maxPacing, pacing, loggerInfo, loggerEx, influxSet);
     }
 
-    public ExampleWebScript(Script script) {
+    public ExampleWebScript0(Script script) {
         super(script);
     }
 
@@ -30,7 +29,8 @@ public class ExampleWebScript extends Script {
     public void action() {
 
         try {
-            long sleep = 3000;
+            long sleep=Utils.getRand(2000, 2500);
+            addpoint("times", "script", "ex0", "resp", sleep);
             Thread.sleep(sleep);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -66,5 +66,21 @@ public class ExampleWebScript extends Script {
 
     @Override
     public void end() {
+    }
+    
+        @Override
+    public void addpoint(String metric, String tagName, String tag, String filedName, long filedValue) {
+        try {
+            Point influxPoint = Point.measurement(metric)
+                    .time(System.currentTimeMillis(), TimeUnit.MILLISECONDS)
+                    .tag(tagName, tag)
+                    .tag("user", this.id)
+                    .addField(filedName, filedValue)
+                    .addField("count", 1)
+                    .build();
+            batchPoints.point(influxPoint);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }

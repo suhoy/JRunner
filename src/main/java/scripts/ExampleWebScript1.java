@@ -1,12 +1,11 @@
 package scripts;
 
-import com.gargoylesoftware.htmlunit.SilentCssErrorHandler;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import junit.framework.Assert;
+import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.Logger;
+import org.influxdb.dto.Point;
 import suhoy.obj.Script;
 import suhoy.utils.InfluxSettings;
+import suhoy.utils.Utils;
 
 /**
  *
@@ -30,7 +29,8 @@ public class ExampleWebScript1 extends Script {
     public void action() {
 
         try {
-            long sleep = 2000;
+            long sleep=Utils.getRand(1000, 1500);
+            addpoint("times", "script", "ex1", "resp", sleep);
             Thread.sleep(sleep);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -64,6 +64,24 @@ public class ExampleWebScript1 extends Script {
         }*/
     }
 
+    @Override
+    public void addpoint(String metric, String tagName, String tag, String filedName, long filedValue) {
+        try {
+            Point influxPoint = Point.measurement(metric)
+                    .time(System.currentTimeMillis(), TimeUnit.MILLISECONDS)
+                    .tag(tagName, tag)
+                    .tag("user", this.id)
+                    .addField(filedName, filedValue)
+                    .addField("count", 1)
+                    .build();
+            batchPoints.point(influxPoint);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    
+    
     @Override
     public void end() {
     }

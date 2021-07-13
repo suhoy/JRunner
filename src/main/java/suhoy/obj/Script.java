@@ -6,7 +6,6 @@ import org.influxdb.InfluxDBFactory;
 import org.influxdb.dto.BatchPoints;
 import org.influxdb.InfluxDB;
 import suhoy.utils.InfluxSettings;
- 
 
 /**
  *
@@ -25,9 +24,8 @@ public abstract class Script implements Runnable {
     protected Logger loggerEx;
     protected InfluxDB influxDB = null;
     protected BatchPoints batchPoints = null;
-    protected int batch_size = 10;
+    protected int batch = 10;
     protected InfluxSettings influxSet;
-
 
     public Script(String name, long minPacing, long maxPacing, boolean pacing, Logger loggerInfo, Logger loggerEx, InfluxSettings influxSet) {
         this.name = name;
@@ -51,14 +49,14 @@ public abstract class Script implements Runnable {
 
     @Override
     final public void run() {
-        this.run = true;
         try {
-            id = this.name + "-" + Thread.currentThread().getName() +"-"+ Thread.currentThread().getId();
+            initvars();
             init();
             loggerInfo.info(id + ": i am started");
             while (this.run) {
                 long start = System.currentTimeMillis();
                 action();
+                writepoints();
                 long finish = System.currentTimeMillis();
                 long duration = finish - start;
                 if (this.pacing) {
@@ -67,10 +65,10 @@ public abstract class Script implements Runnable {
                         loggerInfo.info(id + ": duration = " + duration + "ms, and i am sleep for " + p + " ms");
                         Thread.sleep(p);
                     }
-
                 }
             }
             end();
+            lastwrite();
             loggerInfo.info(id + ": i am stopped");
         } catch (Exception ex) {
             loggerEx.error(id + ex.getMessage(), ex);
@@ -83,10 +81,38 @@ public abstract class Script implements Runnable {
 
     abstract protected void end();
 
+    abstract protected void addpoint(String metric, String tagName, String tag, String filedName, long filedValue);
+
     public final void stop() {
         this.run = false;
     }
+
     public final boolean running() {
         return this.run;
     }
+
+    private void initvars() {
+        this.run = true;
+        this.id = this.name + "-" + Thread.currentThread().getName() + "-" + Thread.currentThread().getId();
+
+        this.influxDB = InfluxDBFactory.connect(this.influxSet.endpoint, this.influxSet.user, this.influxSet.pass);
+        this.batchPoints = BatchPoints.database(this.influxSet.database).retentionPolicy(this.influxSet.retention).build();
+        this.batch = this.influxSet.batch;
+        this.influxDB.enableBatch();
+
+    }
+
+    private void writepoints() {
+        if (this.batchPoints.getPoints().size() >= this.batch) {
+            this.influxDB.write(this.batchPoints);
+            this.batchPoints = BatchPoints.database(this.influxSet.database).retentionPolicy(this.influxSet.retention).build();
+        }
+    }
+
+    private void lastwrite() {
+        this.influxDB.write(batchPoints);
+        this.influxDB.flush();
+        this.influxDB.close();
+    }
+
 }
