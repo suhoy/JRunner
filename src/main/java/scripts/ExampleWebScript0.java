@@ -1,6 +1,15 @@
 package scripts;
 
+import java.io.FileReader;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVRecord;
 import org.apache.logging.log4j.Logger;
 import org.influxdb.dto.Point;
 import suhoy.obj.Script;
@@ -21,15 +30,37 @@ public class ExampleWebScript0 extends Script {
         super(script);
     }
 
+    public ExampleWebScript0() {
+    }
+
+    Iterable<CSVRecord> records = null;
+    ArrayList<CSVRecord> param = new ArrayList<>();
+
     @Override
     public void init() {
+        //читаем файл
+        try (Reader in = new InputStreamReader(Thread.currentThread().getContextClassLoader().getResourceAsStream("pools/example.csv"))) {
+            this.records = CSVFormat.EXCEL.withFirstRecordAsHeader().parse(in);
+
+            for (CSVRecord record : records) {
+                this.param.add(record);
+            }
+        } catch (Exception ex) {
+            loggerEx.error(ex.getMessage(), ex);
+        }
     }
 
     @Override
     public void action() {
-
+        /*
+        берём случайное значение
+        CSVRecord record = Utils.getRandomCSV(param);
+        System.out.println(record.get("login"));
+        System.out.println(record.get("pass"));
+        System.out.println(record.get("name"));*/
         try {
-            long sleep=Utils.getRand(2000, 2500);
+
+            long sleep = Utils.getRand(2000, 2500);
             addpoint("times", "script", "ex0", "resp", sleep);
             Thread.sleep(sleep);
         } catch (Exception ex) {
@@ -67,8 +98,8 @@ public class ExampleWebScript0 extends Script {
     @Override
     public void end() {
     }
-    
-        @Override
+
+    @Override
     public void addpoint(String metric, String tagName, String tag, String filedName, long filedValue) {
         try {
             Point influxPoint = Point.measurement(metric)

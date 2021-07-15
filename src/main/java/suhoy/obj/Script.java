@@ -46,6 +46,7 @@ public abstract class Script implements Runnable {
         this.loggerEx = script.loggerEx;
         this.influxSet = script.influxSet;
     }
+    public Script(){}
 
     @Override
     final public void run() {

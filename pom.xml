@@ -62,6 +62,11 @@
             <artifactId>htmlunit</artifactId>
             <version>2.51.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+            <version>1.8</version>
+        </dependency>
     </dependencies>
     <name>JRunner</name>
 </project>
