@@ -116,6 +116,7 @@ public class Correlation_Challenge_Mod extends Script {
                     .tag("status", status)
                     .addField(filedName, filedValue)
                     .addField("count", 1)
+                    .addField("user", this.id)
                     .build();
             batchPoints.point(influxPoint);
         } catch (Exception ex) {
