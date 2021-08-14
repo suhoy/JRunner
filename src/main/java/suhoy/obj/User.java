@@ -27,7 +27,7 @@ public class User {
     public boolean shouldIWork() {
         if (!this.done) {
             if (System.currentTimeMillis() >= actionTime) {
-                this.done = true;
+                //this.done = true;
                 return true;
             } else {
                 return false;
@@ -35,6 +35,15 @@ public class User {
         } else {
             return false;
         }
+    }
+
+    public void setDone() {
+        this.done = true;
+    }
+    
+    public boolean isDone()
+    {
+        return this.done;
     }
     /*
     public void use() {

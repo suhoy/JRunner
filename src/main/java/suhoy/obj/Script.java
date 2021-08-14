@@ -66,7 +66,7 @@ public abstract class Script implements Runnable {
                 if (this.pacing) {
                     long p = Utils.getPacing(this.minPacing, this.maxPacing) - duration;
                     if (p > 0) {
-                        loggerInfo.info(id + ": duration = " + duration + "ms, and i am sleep for " + p + " ms");
+                        loggerInfo.trace(id + ": duration = " + duration + "ms, and i am sleep for " + p + " ms");
                         Thread.sleep(p);
                     }
                 }

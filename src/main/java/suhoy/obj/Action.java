@@ -62,6 +62,7 @@ public class Action /*implements Comparable<Action>*/ {
                     for (int i = 0; i < users.length; i++) {
                         if (users[i].shouldIWork()) {
                             threadExecutor.execute(scripts[i]);
+                            users[i].setDone();
                             if (i == users.length - 1) {
                                 this.done = true;
                             }
@@ -79,27 +80,39 @@ public class Action /*implements Comparable<Action>*/ {
 
                     for (int i = 0; i < users.length; i++) {
                         if (users[i].shouldIWork()) {
+                            //System.out.println(i + " user ready to stop = " + users[i].shouldIWork());
                             boolean find = false;
                             //находим в старых экшенах скрипт и стопаем его
                             for (Action act : actionP) {
-                                for (Script sc : act.scripts) {
-                                    if (sc.running()) {
-                                        sc.stop();
-                                        find = true;
-                                        break;
-                                    }
+                                if (act.scripts != null) {
+                                    for (Script sc : act.scripts) {
+                                        loggerInfo.info("Found script = " + sc.id + ", script is running = " + sc.running());
+                                        if (sc.running()) {
+                                            sc.stop();
+                                            find = true;
+                                            users[i].setDone();
+                                            if (i == users.length - 1) {
+                                                //последний стопнулся
+                                                this.done = true;
+                                            }
+                                            break;
+                                        }
+                                        if (find) {
+                                            break;
+                                        }
+                                    } // end for scripts
+                                }
+                                if (find) {
                                     break;
-                                } // end for scripts
-                                break;
+                                }
                             } //end for actions
                             if (!find) {
+                                loggerInfo.info("Cant find this amount of scripts to stop from all actions");
                                 this.done = true;
                                 break;
                             }
+
                         } // end if shouldIWork
-                        if (i == users.length - 1) {
-                            this.done = true;
-                        }
                     }
                     break;
                 }

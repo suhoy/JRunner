@@ -84,6 +84,7 @@ public class Runner {
                             //заполняем массив юзеров
                             User[] users = new User[Integer.parseInt(action[1])];
                             for (int u = 0; u < Integer.parseInt(action[1]); u++) {
+                                //System.out.println("created user to stop"+u);
                                 users[u] = new User();
                             }
                             actionPool.addAction(new Action(action[0], Long.parseLong(action[2]), users), loggerInfo, loggerEx);

@@ -102,7 +102,7 @@ public class Correlation_Challenge_Mod extends Script {
         } catch (Exception ex) {
             finish = System.currentTimeMillis();
             addpoint("times", "script", name, "resp", finish - start, "false");
-            loggerEx.error(ex.getMessage(), ex);
+            //loggerEx.error(ex.getMessage(), ex);
         }
     }
 
