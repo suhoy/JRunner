@@ -61,7 +61,7 @@ public class ExampleWebScript0 extends Script {
         try {
 
             long sleep = Utils.getRand(2000, 2500);
-            addpoint("times", "script", "ex0", "resp", sleep);
+            addpoint("times", "script", "ex0", "resp", sleep,"true");
             Thread.sleep(sleep);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -100,12 +100,13 @@ public class ExampleWebScript0 extends Script {
     }
 
     @Override
-    public void addpoint(String metric, String tagName, String tag, String filedName, long filedValue) {
+    public void addpoint(String metric, String tagName, String tag, String filedName, long filedValue, String status) {
         try {
             Point influxPoint = Point.measurement(metric)
                     .time(System.currentTimeMillis(), TimeUnit.MILLISECONDS)
                     .tag(tagName, tag)
                     .tag("user", this.id)
+                    .tag("status", status)
                     .addField(filedName, filedValue)
                     .addField("count", 1)
                     .build();

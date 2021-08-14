@@ -26,6 +26,9 @@ public abstract class Script implements Runnable {
     protected BatchPoints batchPoints = null;
     protected int batch = 10;
     protected InfluxSettings influxSet;
+    
+    protected long start;
+    protected long finish;
 
     public Script(String name, long minPacing, long maxPacing, boolean pacing, Logger loggerInfo, Logger loggerEx, InfluxSettings influxSet) {
         this.name = name;
@@ -82,7 +85,7 @@ public abstract class Script implements Runnable {
 
     abstract protected void end();
 
-    abstract protected void addpoint(String metric, String tagName, String tag, String filedName, long filedValue);
+    abstract protected void addpoint(String metric, String tagName, String tag, String filedName, long filedValue, String status);
 
     public final void stop() {
         this.run = false;
@@ -92,7 +95,7 @@ public abstract class Script implements Runnable {
         return this.run;
     }
 
-    private void initvars() {
+    public void initvars() {
         this.run = true;
         this.id = this.name + "-" + Thread.currentThread().getName() + "-" + Thread.currentThread().getId();
 

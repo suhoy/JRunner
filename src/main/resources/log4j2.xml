@@ -36,6 +36,16 @@
             </Policies>
             <DefaultRolloverStrategy max="500"/>
         </RollingFile>
+        <RollingFile name="LR_Debug" fileName="${APP_LOG_ROOT}/LR-${date:yyyy-MM-dd}/Debug-${date:yyyy-MM-dd}.log"
+                     filePattern="${APP_LOG_ROOT}/LR-${date:yyyy-MM-dd}/Debug-%d{yyyy-MM-dd}-%i.log" >
+            <LevelRangeFilter minLevel="ERROR" maxLevel="TRACE" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+                <SizeBasedTriggeringPolicy size="4096KB" />
+            </Policies>
+            <DefaultRolloverStrategy max="500"/>
+        </RollingFile>
         
     </Appenders>
     
@@ -46,6 +56,10 @@
         </Logger>
         <Logger name="lr_info" additivity="false" level="info">
             <AppenderRef ref="LR_Info" />
+            <AppenderRef ref="Console" />
+        </Logger>
+        <Logger name="lr_debug" additivity="false" level="trace">
+            <AppenderRef ref="LR_Debug" />
             <AppenderRef ref="Console" />
         </Logger>
     </Loggers>
