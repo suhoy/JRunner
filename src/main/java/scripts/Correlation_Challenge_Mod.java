@@ -113,7 +113,7 @@ public class Correlation_Challenge_Mod extends Script {
                     .time(System.currentTimeMillis(), TimeUnit.MILLISECONDS)
                     .tag(tagName, tag)
                     .tag("user", this.id)
-                    .tag(status, status)
+                    .tag("status", status)
                     .addField(filedName, filedValue)
                     .addField("count", 1)
                     .build();
