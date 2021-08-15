@@ -80,13 +80,13 @@ public class Action /*implements Comparable<Action>*/ {
 
                     for (int i = 0; i < users.length; i++) {
                         if (users[i].shouldIWork()) {
-                            //System.out.println(i + " user ready to stop = " + users[i].shouldIWork());
+                            loggerInfo.trace(i + " user ready to stop = " + users[i].shouldIWork());
                             boolean find = false;
                             //находим в старых экшенах скрипт и стопаем его
                             for (Action act : actionP) {
                                 if (act.scripts != null) {
                                     for (Script sc : act.scripts) {
-                                        loggerInfo.info("Found script = " + sc.id + ", script is running = " + sc.running());
+                                        loggerInfo.trace("Found script = " + sc.id + ", script is running = " + sc.running());
                                         if (sc.running()) {
                                             sc.stop();
                                             find = true;
@@ -107,7 +107,7 @@ public class Action /*implements Comparable<Action>*/ {
                                 }
                             } //end for actions
                             if (!find) {
-                                loggerInfo.info("Cant find this amount of scripts to stop from all actions");
+                                loggerInfo.error("Cant find this amount of scripts to stop from all actions");
                                 this.done = true;
                                 break;
                             }
