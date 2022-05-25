@@ -11,8 +11,8 @@ This util works by schedule and there is a list of implemented things:
 * schedule in config file  
 
 ### How to use
-Create class that implements `Script` and does what you need.  
-Then use call it by name in a schedule in config file.
+Create class that implements `Script` and does what you need  
+Then call it by name in a schedule in config file
 
 
 ### Arguments  
