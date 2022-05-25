@@ -5,7 +5,7 @@ Jmeter is cool, but sometimes it's faster and easier to write a couple lines of 
 This util works by schedule and there is a list of implemented things:  
 * `html unit` as web driver  
 * parametrization with files via `commons csv`  
-* gathering data via writing to `influx`  
+* gathering data via writing it to `influx`  
 * `junit` for refactor  
 * logging to files via `log4j2`  
 * schedule in config file  
