@@ -56,7 +56,7 @@ public abstract class Script implements Runnable {
         try {
             initvars();
             init();
-            loggerInfo.info(id + ": i am started");
+            loggerInfo.info(id + ": thread started");
             while (this.run) {
                 long start = System.currentTimeMillis();
                 action();
@@ -73,7 +73,7 @@ public abstract class Script implements Runnable {
             }
             end();
             lastwrite();
-            loggerInfo.info(id + ": i am stopped");
+            loggerInfo.info(id + ": thread stopped");
         } catch (Exception ex) {
             loggerEx.error(id + ex.getMessage(), ex);
         }
