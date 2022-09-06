@@ -21,10 +21,10 @@ import suhoy.utils.InfluxSettings;
  */
 public class KafkaReceiver extends Script {
 
-    private String servers = "rocket-01.srvs.cloudkafka.com:9094,rocket-02.srvs.cloudkafka.com:9094,rocket-03.srvs.cloudkafka.com:9094";
-    private String topic = "3qcoaqag-default";
-    private String user = "3qcoaqag";
-    private String password = "p7gythzQWC5PssZK1F6g6HfGl134bFj_";
+    private String servers = "host-01:9094,host-02:9094,host-03:9094";
+    private String topic = "topic";
+    private String user = "user";
+    private String password = "pass";
 
     // 1000L is the time in milliseconds consumer will wait if no record is found at broker.
     private long pollTime = 1000L;

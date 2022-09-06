@@ -22,7 +22,7 @@ import suhoy.utils.InfluxSettings;
  */
 public class ActiveMQReceiver extends Script {
 
-    private String connectionURL = "tcp://45.141.102.224:61616";
+    private String connectionURL = "tcp://123.123.123.123:61616";
     private String responseQueue = "response";
     private long timeout = 5000L;
     private ConnectionFactory connectionFactory;

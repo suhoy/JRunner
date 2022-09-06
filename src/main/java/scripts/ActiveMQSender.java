@@ -21,8 +21,8 @@ import suhoy.utils.InfluxSettings;
  */
 public class ActiveMQSender extends Script {
 
-    private String connectionURL = "tcp://45.141.102.224:61616";
-    private String requestQueue = "mq_request";
+    private String connectionURL = "tcp://123.123.123.123:61616";
+    private String requestQueue = "request";
     private ConnectionFactory connectionFactory;
     private Connection connection;
     private Session session;
