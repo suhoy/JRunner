@@ -85,7 +85,7 @@ public abstract class Script implements Runnable {
 
     abstract protected void end();
 
-    abstract protected void addpoint(String metric, String tagName, String tag, String filedName, long filedValue, String status);
+    abstract protected void addpoint(long startTime, String metric, String tagName, String tag, String filedName, long filedValue, String status);
 
     public final void stop() {
         this.run = false;

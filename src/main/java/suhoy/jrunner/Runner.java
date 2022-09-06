@@ -72,6 +72,7 @@ public class Runner {
                             Script[] scripts = new Script[Integer.parseInt(action[1])];
                             User[] users = new User[Integer.parseInt(action[1])];
                             for (int u = 0; u < Integer.parseInt(action[1]); u++) {
+                                //add if statement on scriptName if you want use diffrent constructor for specific scripts
                                 scripts[u] = (Script) Class.forName("scripts." + scriptName)
                                         .getConstructor(String.class, long.class, long.class, boolean.class, Logger.class, Logger.class, InfluxSettings.class)
                                         .newInstance(scriptName, scriptPacingMin, scriptPacingMax, scriptPacingEnabled, loggerInfo, loggerEx, influxSet);

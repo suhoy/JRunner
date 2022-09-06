@@ -60,8 +60,11 @@ public class ExampleWebScript0 extends Script {
         System.out.println(record.get("name"));*/
         try {
 
+            long timeStart = System.currentTimeMillis();
             long sleep = Utils.getRand(2000, 2500);
-            addpoint("times", "script", "ex0", "resp", sleep,"true");
+            long timeFinish = System.currentTimeMillis();
+
+            addpoint(timeStart, "times", "script", "ex0", "resp", (timeFinish - timeStart), "true");
             Thread.sleep(sleep);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -100,10 +103,10 @@ public class ExampleWebScript0 extends Script {
     }
 
     @Override
-    public void addpoint(String metric, String tagName, String tag, String filedName, long filedValue, String status) {
+    public void addpoint(long startTime, String metric, String tagName, String tag, String filedName, long filedValue, String status) {
         try {
             Point influxPoint = Point.measurement(metric)
-                    .time(System.currentTimeMillis(), TimeUnit.MILLISECONDS)
+                    .time(startTime, TimeUnit.MILLISECONDS)
                     .tag(tagName, tag)
                     .tag("user", this.id)
                     .tag("status", status)
@@ -112,7 +115,7 @@ public class ExampleWebScript0 extends Script {
                     .build();
             batchPoints.point(influxPoint);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            loggerEx.error(ex.getMessage(), ex);
         }
     }
 }

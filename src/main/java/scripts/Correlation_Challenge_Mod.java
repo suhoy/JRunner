@@ -94,23 +94,23 @@ public class Correlation_Challenge_Mod extends Script {
             loggerInfo.trace("step5 \t body=" + pageDone.getBody().asNormalizedText());
             finish = System.currentTimeMillis();
             if (pageDone.asText().contains("Correlation Challenge Completed (manually). Try now it in Vegen")) {
-                addpoint("times", "script", name, "resp", finish - start, "true");
+                addpoint(System.currentTimeMillis(), "times", "script", name, "resp", finish - start, "true");
             } else {
-                addpoint("times", "script", name, "resp", finish - start, "false");
+                addpoint(System.currentTimeMillis(), "times", "script", name, "resp", finish - start, "false");
             }
 
         } catch (Exception ex) {
             finish = System.currentTimeMillis();
-            addpoint("times", "script", name, "resp", finish - start, "false");
+            addpoint(System.currentTimeMillis(), "times", "script", name, "resp", finish - start, "false");
             loggerEx.trace(ex.getMessage(), ex);
         }
     }
 
     @Override
-    public void addpoint(String metric, String tagName, String tag, String filedName, long filedValue, String status) {
+    public void addpoint(long startTime, String metric, String tagName, String tag, String filedName, long filedValue, String status) {
         try {
             Point influxPoint = Point.measurement(metric)
-                    .time(System.currentTimeMillis(), TimeUnit.MILLISECONDS)
+                    .time(startTime, TimeUnit.MILLISECONDS)
                     .tag(tagName, tag)
                     .tag("user", this.id)
                     .tag("status", status)
