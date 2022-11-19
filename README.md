@@ -50,6 +50,8 @@ scripts.count=2
 script1.name=Correlation_Challenge_Mod
 script1.pacing.enabled=true
 script1.pacing.value=4800,5200
+script1.counter.enabled=false
+script1.counter.value=0
 script1.steps=5
 script1.step1=start,10,1
 script1.step2=wait,5
@@ -60,10 +62,54 @@ script1.step5=stop,20,1
 script2.name=ExampleWebScript0
 script2.pacing.enabled=true
 script2.pacing.value=4800,5200
+script2.counter.enabled=false
+script2.counter.value=0
 script2.steps=5
 script2.step1=start,20,1
 script2.step2=wait,5
 script2.step3=start,20,1
 script2.step4=wait,5
 script2.step5=stop,40,1
+```  
+
+### Config example  
+Config should be placed in resources of jar file   
+```python  
+#Influx connection data
+influx.endpoint=http://localhost:8086
+influx.database=jrunner
+influx.retention=autogen
+influx.batch=10
+influx.user=admin
+influx.pass=admin
+
+#Scripts
+
+#step is an action with args:
+#start,x,y - start x users over y minutes
+#wait,v - wait (keep script running) v minutes
+#stop,z,q - stop z users over q minutes
+#random pacing in ms (min,max)
+
+scripts.count=2
+
+script1.name=Correlation_Challenge_Mod
+script1.pacing.enabled=false
+script1.pacing.value=4800,5200
+script1.counter.enabled=true
+script1.counter.value=5000
+script1.steps=2
+script1.step1=start,1,1
+script1.step2=wait,5
+
+
+script2.name=ExampleWebScript0
+script2.pacing.enabled=false
+script2.pacing.value=4800,5200
+script2.counter.enabled=true
+script2.counter.value=1000
+script2.steps=2
+script2.step1=start,1,1
+script2.step2=wait,5
 ```
+
