@@ -33,8 +33,8 @@ public class KafkaSender extends Script {
 
     Producer<Long, String> producer;
 
-    public KafkaSender(String name, long minPacing, long maxPacing, boolean pacing, Logger loggerInfo, Logger loggerEx, InfluxSettings influxSet) {
-        super(name, minPacing, maxPacing, pacing, loggerInfo, loggerEx, influxSet);
+    public KafkaSender(String name, long counterV, long minPacing, long maxPacing, boolean pacing, boolean counterB, Logger loggerInfo, Logger loggerEx, InfluxSettings influxSet) {
+        super(name, counterV, minPacing, maxPacing, pacing, counterB, loggerInfo, loggerEx, influxSet);
     }
 
     public KafkaSender() {

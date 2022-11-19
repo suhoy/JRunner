@@ -22,8 +22,8 @@ import suhoy.utils.Utils;
  */
 public class ExampleWebScript0 extends Script {
 
-    public ExampleWebScript0(String name, long minPacing, long maxPacing, boolean pacing, Logger loggerInfo, Logger loggerEx, InfluxSettings influxSet) {
-        super(name, minPacing, maxPacing, pacing, loggerInfo, loggerEx, influxSet);
+    public ExampleWebScript0(String name, long counterV, long minPacing, long maxPacing, boolean pacing, boolean counterB, Logger loggerInfo, Logger loggerEx, InfluxSettings influxSet) {
+        super(name, counterV, minPacing, maxPacing, pacing, counterB, loggerInfo, loggerEx, influxSet);
     }
 
     public ExampleWebScript0(Script script) {

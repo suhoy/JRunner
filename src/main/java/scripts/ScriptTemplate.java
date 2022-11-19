@@ -18,8 +18,8 @@ public class ScriptTemplate extends Script {
     private String someStringData = "example";
     private int someIntData = 1000;
 
-    public ScriptTemplate(String name, long minPacing, long maxPacing, boolean pacing, Logger loggerInfo, Logger loggerEx, InfluxSettings influxSet) {
-        super(name, minPacing, maxPacing, pacing, loggerInfo, loggerEx, influxSet);
+    public ScriptTemplate(String name, long counterV, long minPacing, long maxPacing, boolean pacing, boolean counterB, Logger loggerInfo, Logger loggerEx, InfluxSettings influxSet) {
+        super(name, counterV, minPacing, maxPacing, pacing, counterB, loggerInfo, loggerEx, influxSet);
     }
 
     public ScriptTemplate() {
@@ -44,7 +44,7 @@ public class ScriptTemplate extends Script {
             long timeFinish = System.currentTimeMillis();
             
             //send metric to influx
-            addpoint(timeStart, "times", "script", "ex0", "resp", (timeFinish - timeStart), "true");
+            //addpoint(timeStart, "times", "script", "ex0", "resp", (timeFinish - timeStart), "true");
             
         } catch (Exception ex) {
             loggerEx.error(ex.getMessage(), ex);

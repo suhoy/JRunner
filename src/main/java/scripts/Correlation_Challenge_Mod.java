@@ -22,8 +22,8 @@ import suhoy.utils.InfluxSettings;
  */
 public class Correlation_Challenge_Mod extends Script {
 
-    public Correlation_Challenge_Mod(String name, long minPacing, long maxPacing, boolean pacing, Logger loggerInfo, Logger loggerEx, InfluxSettings influxSet) {
-        super(name, minPacing, maxPacing, pacing, loggerInfo, loggerEx, influxSet);
+    public Correlation_Challenge_Mod(String name, long counterV, long minPacing, long maxPacing, boolean pacing, boolean counterB, Logger loggerInfo, Logger loggerEx, InfluxSettings influxSet) {
+        super(name, counterV, minPacing, maxPacing, pacing, counterB, loggerInfo, loggerEx, influxSet);
     }
 
     public Correlation_Challenge_Mod(Script script) {

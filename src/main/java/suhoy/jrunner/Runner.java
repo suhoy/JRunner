@@ -57,6 +57,9 @@ public class Runner {
                 long scriptPacingMax = Long.parseLong(properties.getProperty("script" + i + ".pacing.value").split(",")[1]);
                 int scriptStepsCount = Integer.parseInt(properties.getProperty("script" + i + ".steps"));
 
+                boolean scriptCounterB = Boolean.parseBoolean(properties.getProperty("script" + i + ".counter.enabled"));
+                long scriptCounterV = Long.parseLong(properties.getProperty("script" + i + ".counter.value"));
+
                 //получаем скрипт
                 //Object scriptInstance = Class.forName("scripts." + scriptName).getConstructor(String.class, long.class, long.class, boolean.class).newInstance(scriptName, scriptPacingMin, scriptPacingMax, scriptPacingEnabled);
                 //создаем пул
@@ -74,8 +77,8 @@ public class Runner {
                             for (int u = 0; u < Integer.parseInt(action[1]); u++) {
                                 //add if statement on scriptName if you want use diffrent constructor for specific scripts
                                 scripts[u] = (Script) Class.forName("scripts." + scriptName)
-                                        .getConstructor(String.class, long.class, long.class, boolean.class, Logger.class, Logger.class, InfluxSettings.class)
-                                        .newInstance(scriptName, scriptPacingMin, scriptPacingMax, scriptPacingEnabled, loggerInfo, loggerEx, influxSet);
+                                        .getConstructor(String.class, long.class, long.class, long.class, boolean.class, boolean.class, Logger.class, Logger.class, InfluxSettings.class)
+                                        .newInstance(scriptName,scriptCounterV, scriptPacingMin, scriptPacingMax, scriptPacingEnabled,scriptCounterB, loggerInfo, loggerEx, influxSet);
                                 users[u] = new User();
                             }
                             actionPool.addAction(new Action(action[0], Long.parseLong(action[2]), users, scripts), loggerInfo, loggerEx);

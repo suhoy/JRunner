@@ -17,24 +17,28 @@ public abstract class Script implements Runnable {
     protected String name;
     protected long minPacing;
     protected long maxPacing;
+    protected long counterV;
     protected int user;
     protected boolean run = false;
     protected boolean pacing = false;
+    protected boolean counterB = false;
     protected Logger loggerInfo;
     protected Logger loggerEx;
     protected InfluxDB influxDB = null;
     protected BatchPoints batchPoints = null;
     protected int batch = 10;
     protected InfluxSettings influxSet;
-    
+
     protected long start;
     protected long finish;
 
-    public Script(String name, long minPacing, long maxPacing, boolean pacing, Logger loggerInfo, Logger loggerEx, InfluxSettings influxSet) {
+    public Script(String name, long counterV, long minPacing, long maxPacing, boolean pacing, boolean counterB, Logger loggerInfo, Logger loggerEx, InfluxSettings influxSet) {
         this.name = name;
+        this.counterV = counterV;
         this.minPacing = minPacing;
         this.maxPacing = maxPacing;
         this.pacing = pacing;
+        this.counterB = counterB;
         this.loggerInfo = loggerInfo;
         this.loggerEx = loggerEx;
         this.influxSet = influxSet;
@@ -42,24 +46,30 @@ public abstract class Script implements Runnable {
 
     protected Script(Script script) {
         this.name = script.name;
+        this.counterV = script.counterV;
         this.minPacing = script.minPacing;
         this.maxPacing = script.maxPacing;
         this.pacing = script.pacing;
+        this.counterB = script.counterB;
         this.loggerInfo = script.loggerInfo;
         this.loggerEx = script.loggerEx;
         this.influxSet = script.influxSet;
     }
-    public Script(){}
+
+    public Script() {
+    }
 
     @Override
     final public void run() {
         try {
+            long counter = 1;
             initvars();
             init();
             loggerInfo.info(id + ": thread started");
             while (this.run) {
                 long start = System.currentTimeMillis();
                 action();
+                counter++;
                 writepoints();
                 long finish = System.currentTimeMillis();
                 long duration = finish - start;
@@ -68,6 +78,12 @@ public abstract class Script implements Runnable {
                     if (p > 0) {
                         loggerInfo.trace(id + ": duration = " + duration + "ms, and i am sleep for " + p + " ms");
                         Thread.sleep(p);
+                    }
+                }
+                if (this.counterB) {
+                    if (counter > this.counterV) {
+                        this.run = false;
+                        break;
                     }
                 }
             }
