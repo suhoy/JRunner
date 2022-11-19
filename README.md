@@ -26,7 +26,7 @@ No arguments needed, but you can pass anything and it will be in log files
 java -jar JRunner-1.0.jar -name ExampleRun  
 ```  
 
-### Config example (test with pacing)  
+### Config example  
 Config should be placed in resources of jar file   
 ```python  
 #Influx connection data
@@ -72,7 +72,7 @@ script2.step4=wait,5
 script2.step5=stop,40,1
 ```  
 
-### Config example (test with counter)  
+### Config example (iterations limited by counter)  
 Config should be placed in resources of jar file   
 ```python  
 #Influx connection data
